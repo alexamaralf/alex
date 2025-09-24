@@ -1,0 +1,796 @@
+    <style>
+        /* Botão flutuante voltar ao topo */
+        #backToTop {
+            position: fixed;
+            right: 28px;
+            bottom: 32px;
+            z-index: 100;
+            background: linear-gradient(90deg, var(--cyan), var(--blue));
+            color: #022;
+            border: none;
+            border-radius: 50%;
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 24px rgba(6,182,212,0.18);
+            cursor: pointer;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
+        }
+        #backToTop.visible {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        #backToTop i {
+            width: 28px;
+            height: 28px;
+        }
+    </style>
+    <button id="backToTop" aria-label="Voltar ao topo" title="Voltar ao topo">
+        <i data-lucide="arrow-up"></i>
+    </button>
+<!doctype html>
+<html lang="pt-BR">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+
+    <title>Alex Amaral</title>
+    <meta name="description" content="Consultoria moderna em cibersegurança, proteção de dados, automação de TI e sites seguros. Soluções para empresas que querem crescer com segurança." />
+    <meta name="keywords" content="cibersegurança, segurança da informação, proteção de dados, automação, consultoria, LGPD, TI, Alex Amaral, sites seguros, conscientização, DLP, compliance" />
+    <meta name="author" content="Alex Amaral" />
+    <meta property="og:title" content="Soluções em Técnologia e Cyber Segurança" />
+    <meta property="og:description" content="Consultoria moderna em cibersegurança, proteção de dados, automação de TI e sites seguros." />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="/img/cs.jpg" />
+    <meta property="og:locale" content="pt_BR" />
+    <link rel="icon" type="image/png" href="/img/cs.jpg" />
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+    <style>
+        :root {
+            --bg1: #0e121a;
+            --bg2: #020408;
+            --cyan: #06b6d4;
+            --blue: #34568d;
+            --violet: #7c3aed;
+            --muted: #94a3b8;
+            --text-light: #e6eef6;
+            --card: #0b1220;
+            --glass: rgba(255, 255, 255, 0.03);
+        }
+
+
+        body {
+            margin: 0;
+            font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+            background: linear-gradient(180deg, var(--bg1) 0%, var(--bg2) 70%);
+            color: var(--text-light);
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            line-height: 1.45;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        /* Corrige bug de canvas limitando altura da página */
+        canvas {
+            display: block;
+            width: 100% !important;
+            height: 320px !important;
+            max-width: 100%;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+
+        a:hover {
+            color: var(--cyan);
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 28px;
+        }
+
+        /* Nav */
+        nav {
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            background: rgba(14, 18, 26, 0.8);
+            backdrop-filter: blur(8px);
+            padding: 16px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+        }
+        .nav-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .nav-links {
+            display: flex;
+            gap: 28px;
+        }
+        .nav-link {
+            font-weight: 600;
+        }
+        .menu-toggle {
+            display: none;
+            cursor: pointer;
+        }
+        .nav-mobile {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            width: 100%;
+            background: var(--bg1);
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+            padding: 16px 0;
+            text-align: center;
+        }
+        .nav-mobile a {
+            display: block;
+            padding: 12px;
+            font-weight: 600;
+        }
+
+        /* Header / Hero */
+        header {
+            padding: 60px 0 40px;
+            text-align: center;
+        }
+        h1 {
+            font-size: 40px;
+            margin: 6px 0 10px;
+            font-weight: 800;
+            letter-spacing: -1px;
+            color: var(--cyan);
+        }
+        .slogan {
+            color: var(--muted);
+            font-size: 18px;
+            max-width: 820px;
+            margin: 0 auto;
+        }
+        .cta-row {
+            margin-top: 24px;
+            display: flex;
+            gap: 14px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .btn {
+            border: 0;
+            padding: 14px 24px;
+            border-radius: 999px;
+            font-weight: 700;
+            cursor: pointer;
+            background: linear-gradient(90deg, var(--cyan), var(--blue));
+            color: #022;
+            box-shadow: 0 8px 30px rgba(6, 182, 212, 0.08);
+            text-decoration: none;
+        }
+        .btn-outline {
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            color: var(--muted);
+            padding: 12px 20px;
+            border-radius: 10px;
+        }
+
+        /* Sections */
+        section {
+            padding: 48px 0;
+        }
+        h2 {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--cyan);
+            text-align: center;
+            margin-bottom: 8px;
+        }
+        .section-desc {
+            color: var(--muted);
+            font-size: 16px;
+            max-width: 820px;
+            margin: 0 auto 32px;
+            text-align: center;
+        }
+
+        /* Services grid */
+        .grid {
+            display: grid;
+            gap: 18px;
+        }
+        .services {
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        }
+        .card {
+            background: var(--card);
+            border: 1px solid rgba(255, 255, 255, 0.03);
+            padding: 24px;
+            border-radius: 14px;
+            box-shadow: 0 6px 20px rgba(2, 6, 23, 0.6);
+            transition: transform 0.28s ease, box-shadow 0.28s ease;
+        }
+        .card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 18px 50px rgba(6, 182, 212, 0.08);
+        }
+        .card .icon {
+            width: 56px;
+            height: 56px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, var(--cyan), var(--blue));
+            color: #022;
+            font-weight: 700;
+            margin-bottom: 12px;
+            box-shadow: 0 8px 24px rgba(6, 182, 212, 0.08);
+        }
+        .card h3 {
+            margin: 4px 0 6px;
+            color: var(--cyan);
+            font-size: 20px;
+        }
+        .card p {
+            color: var(--muted);
+            margin: 0;
+            font-size: 14px;
+        }
+
+        /* Stats section */
+        .stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            align-items: center;
+        }
+        .stats-card {
+            padding: 24px;
+            border-radius: 12px;
+            background: var(--card);
+            border: 1px solid rgba(255, 255, 255, 0.03);
+        }
+        .stats h3 {
+            color: var(--cyan);
+            margin: 0 0 8px;
+        }
+        .stats p {
+            color: var(--muted);
+            margin: 0 0 12px;
+        }
+
+        /* Timeline */
+        .timeline-wrap {
+            max-width: 760px;
+            margin: 32px auto;
+            padding-left: 18px;
+        }
+        .tl-line {
+            position: relative;
+            padding-left: 28px;
+            border-left: 3px solid rgba(6, 182, 212, 0.12);
+        }
+        .tl-item {
+            position: relative;
+            margin-bottom: 22px;
+            padding-left: 10px;
+        }
+        .tl-dot {
+            position: absolute;
+            left: -35px;
+            top: 2px;
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--cyan), var(--violet));
+            box-shadow: 0 6px 18px rgba(124, 58, 237, 0.12);
+        }
+        .tl-year {
+            color: var(--cyan);
+            font-weight: 700;
+            margin-bottom: 6px;
+        }
+        .tl-role {
+            color: var(--muted);
+            margin: 0;
+        }
+
+        /* Testimonials */
+        .testimonial-card {
+            padding: 24px;
+            background: var(--card);
+            border: 1px solid rgba(255, 255, 255, 0.03);
+            border-radius: 12px;
+            font-style: italic;
+            position: relative;
+        }
+        .testimonial-card p {
+            color: var(--muted);
+            margin-bottom: 12px;
+        }
+        .testimonial-card::before {
+            content: '“';
+            font-size: 60px;
+            color: var(--cyan);
+            position: absolute;
+            left: 12px;
+            top: -20px;
+            opacity: 0.1;
+        }
+        .testimonial-author {
+            font-style: normal;
+            font-weight: 600;
+            color: var(--text-light);
+            display: block;
+        }
+        .testimonial-role {
+            font-size: 14px;
+            color: var(--muted);
+        }
+
+        /* Contact */
+        .contact {
+            max-width: 760px;
+            margin: 36px auto;
+            padding: 22px;
+            border-radius: 12px;
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.01));
+            border: 1px solid rgba(255, 255, 255, 0.03);
+        }
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+        input, textarea {
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            padding: 12px;
+            border-radius: 8px;
+            color: inherit;
+            outline: none;
+        }
+        input:focus, textarea:focus {
+            border-color: rgba(6, 182, 212, 0.7);
+            box-shadow: 0 6px 20px rgba(6, 182, 212, 0.06);
+        }
+        textarea {
+            grid-column: 1 / -1;
+            min-height: 120px;
+        }
+        .contact .note {
+            color: var(--muted);
+            font-size: 14px;
+            margin-top: 12px;
+        }
+
+        /* Footer */
+        footer {
+            margin-top: 40px;
+            padding: 18px 0;
+            text-align: center;
+            color: var(--muted);
+            font-size: 13px;
+        }
+
+        /* Responsive */
+        @media (max-width: 900px) {
+            .stats {
+                grid-template-columns: 1fr;
+            }
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+            h1 {
+                font-size: 32px;
+            }
+            .nav-links {
+                display: none;
+            }
+            .menu-toggle {
+                display: block;
+            }
+            .nav-mobile.open {
+                display: block;
+            }
+        }
+
+        /* Animações */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(16px);
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+        }
+        .fade-in.animate {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Animação para o Body */
+        @keyframes fadeInBody {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        /* body {
+            animation: fadeInBody 1.2s ease-out forwards;
+        } */
+    </style>
+</head>
+<body>
+
+    <nav aria-label="Navegação principal">
+        <div class="container nav-content">
+            <a href="#" class="nav-brand" style="font-weight: 800; letter-spacing: -1px; font-size: 1.7rem; color: var(--cyan); background: none; border: none; text-shadow: 0 2px 16px #06b6d4a0;">
+                Alex Amaral
+            </a>
+            <div class="nav-links">
+                <a href="#services" class="nav-link">Serviços</a>
+                <a href="#stats" class="nav-link">Cenário</a>
+                <a href="#about" class="nav-link">Sobre</a>
+                <a href="#testimonials" class="nav-link">Depoimentos</a>
+                <a href="#contact" class="nav-link">Contato</a>
+            </div>
+            <div style="display:flex; gap:12px; align-items:center;">
+                <a href="https://www.linkedin.com/in/alexamaralf/" target="_blank" aria-label="LinkedIn" style="color:var(--cyan);"><i data-lucide="linkedin"></i></a>
+                <a href="https://www.instagram.com/" target="_blank" aria-label="Instagram" style="color:var(--cyan);"><i data-lucide="instagram"></i></a>
+                <a href="https://wa.me/5599999999999" target="_blank" aria-label="WhatsApp" style="color:var(--cyan);"><i data-lucide="message-circle"></i></a>
+            </div>
+            <div class="menu-toggle" aria-label="Abrir menu" tabindex="0">
+                <i data-lucide="menu"></i>
+            </div>
+            <div class="nav-mobile" aria-label="Menu mobile">
+                <a href="#services">Serviços</a>
+                <a href="#stats">Cenário</a>
+                <a href="#about">Sobre</a>
+                <a href="#testimonials">Depoimentos</a>
+                <a href="#contact">Contato</a>
+            </div>
+        </div>
+    </nav>
+
+    <header>
+        <h1 style="font-size: 2.7rem; font-weight: 900; letter-spacing: -2px; margin-bottom: 10px; background: linear-gradient(90deg, var(--cyan), var(--violet)); -webkit-background-clip: text; background-clip: text; color: transparent; text-shadow: 0 2px 24px #06b6d4a0;">
+            Soluções em Tecnologia e Cyber Segurança
+        </h1>
+        <p class="slogan">
+            Consultoria em segurança, automação, proteção de dados e sites blindados para empresas modernas.<br>
+            <span style="color: var(--cyan); font-weight: 600;">Seu negócio seguro, ágil e preparado para crescer.</span>
+        </p>
+        <div class="cta-row">
+            <a class="btn" href="#contact">Solicitar Contato</a>
+            <a class="btn-outline" href="https://www.linkedin.com/in/alexamaralf/" target="_blank" rel="noopener">Conectar no LinkedIn</a>
+        </div>
+    </header>
+
+    <section id="services">
+        <div class="container">
+            <h2 class="fade-in">Meus Serviços</h2>
+            <p class="section-desc fade-in">Soluções personalizadas para proteger, otimizar e fortalecer sua infraestrutura de TI.</p>
+            <div class="services grid">
+                <div class="card fade-in">
+                    <div class="icon">
+                        <i data-lucide="shield" style="width: 28px; height: 28px;"></i>
+                    </div>
+                    <h3>Cyber Segurança</h3>
+                    <p>Proteção contra ataques digitais, hardening de servidores, redes e mitigação de riscos. <span style="color:var(--cyan);font-weight:600;">Sem pentest.</span></p>
+                </div>
+
+                <div class="card fade-in" style="animation-delay: 0.1s;">
+                    <div class="icon">
+                        <i data-lucide="cpu" style="width: 28px; height: 28px;"></i>
+                    </div>
+                    <h3>TI & Automação</h3>
+                    <p>Otimização de processos, integração de ferramentas e automação segura de rotinas.</p>
+                </div>
+
+                <div class="card fade-in" style="animation-delay: 0.2s;">
+                    <div class="icon">
+                        <i data-lucide="lock" style="width: 28px; height: 28px;"></i>
+                    </div>
+                    <h3>Proteção de Dados (DLP)</h3>
+                    <p>Políticas, monitoramento e prevenção de vazamento de informações críticas.</p>
+                </div>
+
+                <div class="card fade-in" style="animation-delay: 0.3s;">
+                    <div class="icon">
+                        <i data-lucide="globe" style="width: 28px; height: 28px;"></i>
+                    </div>
+                    <h3>Web & Sites Seguros</h3>
+                    <p>Desenvolvimento seguro, HTTPS, WAF e hardening da stack de hospedagem.</p>
+                </div>
+
+                <div class="card fade-in" style="animation-delay: 0.4s;">
+                    <div class="icon">
+                        <i data-lucide="zap" style="width: 28px; height: 28px;"></i>
+                    </div>
+                    <h3>Conscientização</h3>
+                    <p>Treinamentos, phishing simulado e métricas para reduzir riscos humanos.</p>
+                </div>
+
+                <div class="card fade-in" style="animation-delay: 0.5s;">
+                    <div class="icon">
+                        <i data-lucide="bar-chart" style="width: 28px; height: 28px;"></i>
+                    </div>
+                    <h3>Consultoria Estratégica</h3>
+                    <p>Planejamento de segurança, compliance (LGPD/ISO) e governança de TI.</p>
+                </div>
+            </div>
+            <!-- Informação sobre pentest removida a pedido do usuário -->
+        </div>
+    </section>
+
+    <section id="stats">
+        <div class="container stats">
+            <div class="stats-card fade-in">
+                <h3>Cenário de Ameaças Cibernéticas</h3>
+                <p>O número de incidentes cresceu de forma consistente. Invista em prevenção e resposta.</p>
+                <canvas id="lineChart" aria-label="gráfico de linha exibindo incidentes por ano"></canvas>
+            </div>
+            <div class="stats-card fade-in" style="animation-delay:0.1s;">
+                <h3>Benefícios da Consultoria de TI</h3>
+                <p>Veja como uma consultoria pode transformar sua empresa:</p>
+                <canvas id="barChart" aria-label="Gráfico de barras dos benefícios da consultoria de TI"></canvas>
+            </div>
+        </div>
+    </section>
+    <section id="faq">
+        <div class="container">
+            <h2 class="fade-in">FAQ - Perguntas Frequentes</h2>
+            <div class="faq-list">
+                <div class="faq-block">
+                    <details class="fade-in" open>
+                        <summary><i data-lucide="help-circle"></i> Por que contratar uma consultoria de TI?</summary>
+                        <div>Uma consultoria traz experiência, visão externa e soluções personalizadas para aumentar a segurança, eficiência e competitividade do seu negócio.</div>
+                    </details>
+                    <details class="fade-in">
+                        <summary><i data-lucide="star"></i> Quais benefícios posso esperar?</summary>
+                        <div>Redução de custos, prevenção de incidentes, automação de processos, adequação à LGPD, e suporte estratégico para decisões de tecnologia.</div>
+                    </details>
+                </div>
+                <div class="faq-block">
+                    <details class="fade-in">
+                        <summary><i data-lucide="user-check"></i> Como funciona o atendimento?</summary>
+                        <div>O atendimento é personalizado, com diagnóstico inicial, plano de ação e acompanhamento contínuo conforme a necessidade da sua empresa.</div>
+                    </details>
+                    <details class="fade-in">
+                        <summary><i data-lucide="users"></i> Atende empresas de qualquer porte?</summary>
+                        <div>Sim! Atendo desde pequenas empresas até grandes organizações, adaptando as soluções ao contexto de cada cliente.</div>
+                    </details>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="about">
+        <div class="container">
+            <h2 class="fade-in">Sobre mim</h2>
+            <p class="section-desc fade-in">
+                Sou Alex Amaral — especialista em segurança cibernética, automação e infraestrutura. Trabalho para transformar segurança em diferencial competitivo, reduzindo riscos e automatizando operações.
+            </p>
+            <div class="timeline-wrap">
+                <div class="tl-line">
+                    <div class="tl-item fade-in">
+                        <div class="tl-dot"></div>
+                        <div class="tl-year">2015</div>
+                        <div class="tl-role">Início na área de TI e infraestrutura</div>
+                    </div>
+                    <div class="tl-item fade-in" style="animation-delay: 0.1s;">
+                        <div class="tl-dot"></div>
+                        <div class="tl-year">2017</div>
+                        <div class="tl-role">Especialização em Segurança da Informação</div>
+                    </div>
+                    <div class="tl-item fade-in" style="animation-delay: 0.2s;">
+                        <div class="tl-dot"></div>
+                        <div class="tl-year">2019</div>
+                        <div class="tl-role">Consultoria em Cyber Segurança e Automação</div>
+                    </div>
+                    <div class="tl-item fade-in" style="animation-delay: 0.3s;">
+                        <div class="tl-dot"></div>
+                        <div class="tl-year">2021</div>
+                        <div class="tl-role">Projetos em Proteção de Dados e Compliance</div>
+                    </div>
+                    <div class="tl-item fade-in" style="animation-delay: 0.4s;">
+                        <div class="tl-dot"></div>
+                        <div class="tl-year">2023</div>
+                        <div class="tl-role">Fundação da Alex Amaral Cyber Solutions</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="testimonials">
+        <div class="container">
+            <h2 class="fade-in">O que dizem sobre mim</h2>
+            <p class="section-desc fade-in">A confiança é a base de qualquer parceria sólida. Veja alguns depoimentos.</p>
+            <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));">
+                <div class="testimonial-card fade-in">
+                    <p>"O trabalho de consultoria foi essencial para a segurança da nossa empresa. O Alex identificou vulnerabilidades que não sabíamos que existiam e implementou soluções robustas."</p>
+                    <span class="testimonial-author">João Silva</span>
+                    <span class="testimonial-role">CEO, Tech Solutions</span>
+                </div>
+                <div class="testimonial-card fade-in" style="animation-delay: 0.1s;">
+                    <p>"Os treinamentos de conscientização foram práticos e diretos. Nossa equipe está muito mais preparada para reconhecer e evitar ataques de phishing."</p>
+                    <span class="testimonial-author">Maria Oliveira</span>
+                    <span class="testimonial-role">Gerente de TI, Inovare</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="contact">
+        <div class="container contact fade-in">
+            <h2>Entre em Contato</h2>
+            <p class="note">Quer proteger sua empresa, otimizar processos ou criar um site seguro? Me envie uma mensagem.</p>
+            <form id="contactForm" class="form-grid" action="https://formspree.io/f/xoqgqjzv" method="POST">
+                <input type="text" id="name" name="name" placeholder="Seu nome *" required autocomplete="name" />
+                <input type="email" id="email" name="email" placeholder="Seu e-mail *" required autocomplete="email" />
+                <input type="text" id="subject" name="subject" placeholder="Assunto *" required />
+                <textarea id="message" name="message" placeholder="Mensagem *" required></textarea>
+                <div style="grid-column: 1/-1; display: flex; flex-wrap: wrap; gap: 12px; align-items: center; margin-top: 6px;">
+                    <button type="submit" class="btn">Enviar Mensagem</button>
+                    <a class="btn-outline" href="mailto:contato@seudominio.com">contato@seudominio.com</a>
+                    <div style="margin-left: auto; color: var(--muted); font-size: 13px;">Ou conecte no <a href="https://www.linkedin.com/in/alexamaralf/" target="_blank" style="color:var(--cyan)">LinkedIn</a></div>
+                </div>
+                <input type="hidden" name="_subject" value="Novo contato pelo site Alex Amaral" />
+            </form>
+            <div id="form-success" style="display:none; color:var(--cyan); margin-top:18px; text-align:center; font-weight:600;">Mensagem enviada com sucesso! Obrigado pelo contato.</div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container" style="display:flex;flex-direction:column;align-items:center;gap:8px;">
+            <div style="display:flex;gap:18px;justify-content:center;">
+                <a href="https://www.linkedin.com/in/alexamaralf/" target="_blank" aria-label="LinkedIn" style="color:var(--cyan);"><i data-lucide="linkedin"></i></a>
+                <a href="https://www.instagram.com/" target="_blank" aria-label="Instagram" style="color:var(--cyan);"><i data-lucide="instagram"></i></a>
+                <a href="https://wa.me/5599999999999" target="_blank" aria-label="WhatsApp" style="color:var(--cyan);"><i data-lucide="message-circle"></i></a>
+            </div>
+            <div style="font-size:13px;color:var(--muted);margin-top:4px;">
+                © <span id="year"></span> Alex Amaral Cyber Solutions · Todos os direitos reservados · <a href="#" style="color:var(--cyan);text-decoration:underline;">Política de Privacidade</a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Inicializa os ícones do Lucide
+        lucide.createIcons();
+
+        // Botão voltar ao topo
+        const backToTop = document.getElementById('backToTop');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 200) {
+                backToTop.classList.add('visible');
+            } else {
+                backToTop.classList.remove('visible');
+            }
+        });
+        backToTop.addEventListener('click', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+
+        // Atualiza o ano no rodapé
+        document.getElementById('year').textContent = new Date().getFullYear();
+
+        // Menu mobile (acessibilidade)
+        const menuToggle = document.querySelector('.menu-toggle');
+        const navMobile = document.querySelector('.nav-mobile');
+        menuToggle.addEventListener('click', () => {
+            navMobile.classList.toggle('open');
+        });
+        menuToggle.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') navMobile.classList.toggle('open');
+        });
+
+        // Configuração dos gráficos com Chart.js
+        const lineCtx = document.getElementById('lineChart');
+    // Gráfico de barras dos benefícios
+    const barCtx = document.getElementById('barChart');
+
+        const lineData = {
+            labels: ['2020', '2021', '2022', '2023', '2024'],
+            datasets: [{
+                label: 'Incidentes',
+                data: [120, 200, 350, 500, 680],
+                borderColor: '#06b6d4',
+                backgroundColor: 'rgba(6,182,212,0.08)',
+                tension: 0.3,
+                pointRadius: 4,
+                pointBackgroundColor: '#06b6d4',
+                fill: true,
+            }]
+        };
+
+        new Chart(lineCtx, {
+            type: 'line',
+            data: lineData,
+            options: {
+                plugins: { legend: { display: false }, tooltip: { mode: 'index', intersect: false } },
+                scales: {
+                    x: { ticks: { color: '#94a3b8' }, grid: { display: false } },
+                    y: { ticks: { color: '#94a3b8' }, grid: { color: 'rgba(255,255,255,0.03)' } }
+                },
+                responsive: true,
+                maintainAspectRatio: true
+            }
+        });
+
+
+        // Dados do infográfico de benefícios
+        const barData = {
+            labels: ['Redução de Custos', 'Prevenção de Incidentes', 'Automação', 'Compliance LGPD', 'Aumento de Produtividade'],
+            datasets: [{
+                label: 'Benefício percebido (%)',
+                data: [80, 75, 70, 65, 60],
+                backgroundColor: [
+                    '#06b6d4',
+                    '#3b82f6',
+                    '#9333ea',
+                    '#f59e0b',
+                    '#7c3aed'
+                ],
+                borderRadius: 8,
+                barPercentage: 0.7,
+                categoryPercentage: 0.6
+            }]
+        };
+
+        new Chart(barCtx, {
+            type: 'bar',
+            data: barData,
+            options: {
+                plugins: {
+                    legend: { display: false },
+                    tooltip: { mode: 'index', intersect: false }
+                },
+                scales: {
+                    x: { ticks: { color: '#94a3b8', font: { weight: 600 } }, grid: { display: false } },
+                    y: { ticks: { color: '#94a3b8' }, grid: { color: 'rgba(255,255,255,0.03)' }, beginAtZero: true, max: 100 }
+                },
+                responsive: true,
+                maintainAspectRatio: true
+            }
+        });
+
+        // Handler para o formulário de contato (Formspree)
+        document.getElementById('contactForm').addEventListener('submit', function(event) {
+            // Permite submit normal para Formspree, mas mostra feedback amigável
+            setTimeout(() => {
+                document.getElementById('form-success').style.display = 'block';
+                document.getElementById('contactForm').reset();
+            }, 600);
+        });
+
+        // Animação de entrada na tela com IntersectionObserver
+        document.addEventListener('DOMContentLoaded', () => {
+            const fadeInElements = document.querySelectorAll('.fade-in');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('animate');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            fadeInElements.forEach(el => observer.observe(el));
+        });
+    </script>
+</body>
+</html>
