@@ -9,17 +9,21 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;500;700&display=swap" rel="stylesheet">
     
     <style>
-        /* --- RESET & VARIÁVEIS --- */
+        /* --- RESET & VARIÁVEIS (TEMA CLARO) --- */
         :root {
-            --bg-color: #0f172a;
-            --card-bg: #1e293b;
-            --input-bg: #334155;
-            --text-color: #f1f5f9;
-            --text-muted: #94a3b8;
-            --accent: #06b6d4;
-            --accent-hover: #22d3ee;
-            --gradient: linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%);
-            --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --bg-color: #f8fafc; /* Fundo cinza muito claro */
+            --card-bg: #ffffff;  /* Cartões brancos */
+            --input-bg: #f1f5f9; /* Inputs cinza claro */
+            --text-color: #0f172a; /* Texto escuro (quase preto) */
+            --text-muted: #64748b; /* Texto secundário cinza médio */
+            --border-color: rgba(0, 0, 0, 0.08); /* Bordas sutis */
+            
+            --accent: #0891b2; /* Ciano um pouco mais escuro para contraste no branco */
+            --accent-hover: #06b6d4;
+            --gradient: linear-gradient(135deg, #0891b2 0%, #2563eb 100%);
+            
+            --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+            --card-hover-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -2px rgba(0, 0, 0, 0.04);
         }
 
         html { scroll-behavior: smooth; }
@@ -41,14 +45,15 @@
             position: fixed;
             top: 0;
             width: 100%;
-            background: rgba(15, 23, 42, 0.95);
+            background: rgba(255, 255, 255, 0.9); /* Branco translúcido */
             backdrop-filter: blur(10px);
             padding: 1rem 5%;
             display: flex;
             justify-content: space-between;
             align-items: center;
             z-index: 1000;
-            border-bottom: 1px solid rgba(255,255,255,0.05);
+            border-bottom: 1px solid var(--border-color);
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
         }
 
         .logo { font-size: 1.5rem; font-weight: 700; color: var(--text-color); }
@@ -57,7 +62,7 @@
         nav ul { display: flex; gap: 2rem; }
         nav a { font-size: 0.95rem; color: var(--text-muted); font-weight: 500; }
         nav a:hover { color: var(--accent); }
-        .menu-btn { display: none; font-size: 1.5rem; cursor: pointer; }
+        .menu-btn { display: none; font-size: 1.5rem; cursor: pointer; color: var(--text-color); }
 
         /* --- HERO --- */
         .hero {
@@ -68,12 +73,13 @@
             align-items: center;
             text-align: center;
             padding: 0 1rem;
-            background: radial-gradient(circle at top, rgba(6, 182, 212, 0.15) 0%, transparent 40%);
+            /* Gradiente sutil no fundo branco */
+            background: radial-gradient(circle at top, rgba(8, 145, 178, 0.08) 0%, transparent 50%);
         }
 
         .hero h1 {
             font-size: 4rem;
-            font-weight: 700;
+            font-weight: 800;
             letter-spacing: -2px;
             margin-bottom: 0.5rem;
             background: var(--gradient);
@@ -81,7 +87,7 @@
             -webkit-text-fill-color: transparent;
         }
 
-        .hero h2 { font-size: 1.5rem; font-weight: 300; color: var(--text-muted); margin-bottom: 2rem; }
+        .hero h2 { font-size: 1.5rem; font-weight: 400; color: var(--text-muted); margin-bottom: 2rem; }
 
         .cta-group { display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center; }
 
@@ -97,22 +103,23 @@
             cursor: pointer;
             font-family: inherit;
             font-size: 1rem;
+            transition: 0.3s;
         }
 
         .btn-primary {
             background: var(--gradient);
             color: #fff;
-            box-shadow: 0 4px 15px rgba(6, 182, 212, 0.3);
+            box-shadow: 0 4px 15px rgba(37, 99, 235, 0.2);
         }
-        .btn-primary:hover { transform: translateY(-3px); box-shadow: 0 6px 20px rgba(6, 182, 212, 0.4); }
+        .btn-primary:hover { transform: translateY(-3px); box-shadow: 0 6px 20px rgba(37, 99, 235, 0.3); }
 
-        .btn-outline { border: 1px solid var(--text-muted); color: var(--text-color); }
-        .btn-outline:hover { border-color: var(--accent); color: var(--accent); }
+        .btn-outline { border: 1px solid var(--text-muted); color: var(--text-color); background: transparent; }
+        .btn-outline:hover { border-color: var(--accent); color: var(--accent); background: rgba(8, 145, 178, 0.05); }
 
         /* --- SECTIONS --- */
         section { padding: 5rem 10%; }
         .section-title { text-align: center; margin-bottom: 3rem; }
-        .section-title h3 { font-size: 2rem; margin-bottom: 0.5rem; }
+        .section-title h3 { font-size: 2rem; margin-bottom: 0.5rem; color: var(--text-color); }
         .section-title p { color: var(--text-muted); }
 
         /* --- SERVIÇOS --- */
@@ -126,13 +133,14 @@
             background: var(--card-bg);
             padding: 2rem;
             border-radius: 12px;
-            border: 1px solid rgba(255,255,255,0.05);
+            border: 1px solid var(--border-color);
+            box-shadow: var(--card-shadow);
             transition: 0.3s;
         }
-        .card:hover { transform: translateY(-5px); border-color: var(--accent); }
+        .card:hover { transform: translateY(-5px); border-color: var(--accent); box-shadow: var(--card-hover-shadow); }
         .card i { font-size: 2rem; color: var(--accent); margin-bottom: 1.5rem; }
-        .card h4 { font-size: 1.2rem; margin-bottom: 1rem; }
-        .card p { color: var(--text-muted); font-size: 0.9rem; }
+        .card h4 { font-size: 1.2rem; margin-bottom: 1rem; color: var(--text-color); }
+        .card p { color: var(--text-muted); font-size: 0.95rem; }
 
         /* --- PORTFÓLIO --- */
         .portfolio-filter {
@@ -149,15 +157,17 @@
             background: var(--card-bg);
             color: var(--text-muted);
             font-weight: 500;
-            border: 1px solid rgba(255,255,255,0.05);
+            border: 1px solid var(--border-color);
             cursor: pointer;
             transition: 0.3s;
+            box-shadow: var(--card-shadow);
         }
 
         .filter-btn.active, .filter-btn:hover {
             background: var(--accent);
             color: #fff;
             border-color: var(--accent);
+            box-shadow: 0 4px 10px rgba(8, 145, 178, 0.2);
         }
 
         .portfolio-grid {
@@ -167,14 +177,15 @@
         }
 
         .project-card {
-            background: #fff;
+            background: var(--card-bg);
             border-radius: 12px;
             overflow: hidden;
+            border: 1px solid var(--border-color);
             box-shadow: var(--card-shadow);
             transition: all 0.4s ease;
         }
         
-        .project-card:hover { transform: translateY(-5px); }
+        .project-card:hover { transform: translateY(-5px); box-shadow: var(--card-hover-shadow); }
 
         .project-card.hide { display: none; }
         .project-card.show { animation: fadeIn 0.5s ease forwards; }
@@ -183,21 +194,21 @@
         .project-img { height: 200px; overflow: hidden; }
         .project-img img { width: 100%; height: 100%; object-fit: cover; }
 
-        .project-info { padding: 1.5rem; color: #334155; }
-        .project-info h4 { font-size: 1.25rem; font-weight: 700; margin-bottom: 0.75rem; color: #1e293b; }
-        .project-info p { font-size: 0.95rem; color: #64748b; margin-bottom: 1.5rem; line-height: 1.6; }
+        .project-info { padding: 1.5rem; color: var(--text-color); }
+        .project-info h4 { font-size: 1.25rem; font-weight: 700; margin-bottom: 0.75rem; color: var(--text-color); }
+        .project-info p { font-size: 0.95rem; color: var(--text-muted); margin-bottom: 1.5rem; line-height: 1.6; }
 
         .tags-container { display: flex; flex-wrap: wrap; gap: 0.5rem; }
         .tag-btn {
             padding: 0.3rem 0.8rem;
-            background: #e0f2fe;
-            color: #0284c7;
+            background: #e0f2fe; /* Azul bem clarinho */
+            color: #0369a1; /* Azul escuro */
             border-radius: 50px;
             font-size: 0.8rem;
             font-weight: 600;
         }
 
-        /* --- SEÇÃO DE CONTATO (NOVA) --- */
+        /* --- CONTATO --- */
         .contact-container {
             display: grid;
             grid-template-columns: 1fr 1.5fr;
@@ -205,7 +216,6 @@
             align-items: start;
         }
 
-        /* Coluna da Esquerda: Infos */
         .contact-info h3 { font-size: 1.5rem; margin-bottom: 1rem; color: var(--text-color); }
         .contact-info p { color: var(--text-muted); margin-bottom: 2rem; }
 
@@ -219,7 +229,7 @@
         .info-icon {
             width: 45px;
             height: 45px;
-            background: rgba(6, 182, 212, 0.1);
+            background: rgba(8, 145, 178, 0.1);
             color: var(--accent);
             border-radius: 50%;
             display: flex;
@@ -234,18 +244,19 @@
         .social-contact { margin-top: 2rem; display: flex; gap: 1rem; }
         .social-contact a {
             width: 40px; height: 40px; border-radius: 50%;
-            background: var(--card-bg); border: 1px solid rgba(255,255,255,0.1);
+            background: var(--card-bg); border: 1px solid var(--border-color);
             display: flex; align-items: center; justify-content: center;
             color: var(--text-muted); transition: 0.3s;
+            box-shadow: var(--card-shadow);
         }
-        .social-contact a:hover { border-color: var(--accent); color: var(--accent); }
+        .social-contact a:hover { border-color: var(--accent); color: var(--accent); transform: translateY(-2px); }
 
-        /* Coluna da Direita: Form */
         .contact-form {
             background: var(--card-bg);
             padding: 2.5rem;
             border-radius: 12px;
-            border: 1px solid rgba(255,255,255,0.05);
+            border: 1px solid var(--border-color);
+            box-shadow: var(--card-shadow);
         }
 
         .form-group { margin-bottom: 1.5rem; }
@@ -253,8 +264,8 @@
         .form-control {
             width: 100%;
             padding: 1rem;
-            background: var(--bg-color);
-            border: 1px solid rgba(255,255,255,0.1);
+            background: var(--input-bg);
+            border: 1px solid rgba(0,0,0,0.05);
             border-radius: 8px;
             color: var(--text-color);
             font-family: 'Inter', sans-serif;
@@ -264,18 +275,18 @@
         .form-control:focus {
             outline: none;
             border-color: var(--accent);
-            box-shadow: 0 0 0 4px rgba(6, 182, 212, 0.1);
+            box-shadow: 0 0 0 4px rgba(8, 145, 178, 0.1);
+            background: #fff;
         }
 
         textarea.form-control { resize: vertical; min-height: 120px; }
 
-        /* --- FOOTER SIMPLIFICADO --- */
+        /* --- FOOTER (Mantive escuro para contraste no final da página) --- */
         footer {
-            background: #020617;
+            background: #0f172a; /* Slate 900 */
             padding: 2rem 10%;
             text-align: center;
-            border-top: 1px solid rgba(255,255,255,0.05);
-            color: var(--text-muted);
+            color: #94a3b8;
             font-size: 0.9rem;
         }
 
@@ -284,7 +295,7 @@
             nav ul {
                 display: none; flex-direction: column; position: absolute;
                 top: 70px; right: 0; width: 100%; background: var(--card-bg);
-                padding: 2rem; text-align: center;
+                padding: 2rem; text-align: center; box-shadow: var(--card-shadow);
             }
             nav ul.active { display: flex; }
             .hero h1 { font-size: 2.8rem; }
@@ -529,7 +540,6 @@
     </footer>
 
     <script>
-        // Menu Mobile
         function toggleMenu() {
             const navList = document.getElementById('nav-list');
             navList.classList.toggle('active');
@@ -540,7 +550,6 @@
             });
         });
 
-        // Filtro do Portfólio
         const filterButtons = document.querySelectorAll('.filter-btn');
         const projectCards = document.querySelectorAll('.project-card');
 
