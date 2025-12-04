@@ -64,7 +64,7 @@
         nav a:hover { color: var(--accent); }
         .menu-btn { display: none; font-size: 1.5rem; cursor: pointer; color: var(--text-color); }
 
-        /* Ícones Sociais do Header (NOVO) */
+        /* Ícones Sociais do Header */
         .header-social {
             display: flex;
             gap: 1rem;
@@ -315,13 +315,8 @@
         .project-img img { width: 100%; height: 100%; object-fit: cover; }
         .project-info { padding: 1.5rem; color: var(--text-color); }
         .project-info h4 { font-size: 1.25rem; font-weight: 700; margin-bottom: 0.75rem; }
-        .project-info p { font-size: 0.95rem; color: var(--text-muted); margin-bottom: 1.5rem; }
-        .tags-container { display: flex; flex-wrap: wrap; gap: 0.5rem; }
-        .tag-btn {
-            padding: 0.3rem 0.8rem; background: #e0f2fe; color: #0369a1;
-            border-radius: 50px; font-size: 0.8rem; font-weight: 600;
-        }
-
+        .project-info p { font-size: 0.95rem; color: var(--text-muted); margin-bottom: 0; }
+        
         /* --- CONTATO --- */
         .contact-container {
             display: grid; grid-template-columns: 1fr 1.5fr; gap: 4rem; align-items: start;
@@ -341,8 +336,8 @@
         
         /* Ícones Sociais do Contacto (AUMENTADOS) */
         .social-contact a {
-            width: 52px; /* Aumentado */
-            height: 52px; /* Aumentado */
+            width: 52px; 
+            height: 52px;
             border-radius: 50%; 
             background: var(--card-bg);
             border: 1px solid var(--border-color); 
@@ -350,7 +345,7 @@
             align-items: center;
             justify-content: center; 
             color: var(--text-muted); 
-            font-size: 1.4rem; /* Aumentado */
+            font-size: 1.4rem; 
             transition: 0.3s;
         }
         .social-contact a:hover { border-color: var(--accent); color: var(--accent); transform: scale(1.1); }
@@ -573,10 +568,6 @@
                 <div class="project-info">
                     <h4>Website Empresarial Premium</h4>
                     <p>Site corporativo moderno, responsivo e otimizado para SEO.</p>
-                    <div class="tags-container">
-                        <span class="tag-btn">React</span>
-                        <span class="tag-btn">SEO</span>
-                    </div>
                 </div>
             </div>
 
@@ -587,10 +578,6 @@
                 <div class="project-info">
                     <h4>Sistema de Agendamento</h4>
                     <p>Plataforma completa com agendamento online e gestão.</p>
-                    <div class="tags-container">
-                        <span class="tag-btn">Node.js</span>
-                        <span class="tag-btn">MongoDB</span>
-                    </div>
                 </div>
             </div>
 
@@ -601,10 +588,6 @@
                 <div class="project-info">
                     <h4>Plataforma de Gestão</h4>
                     <p>Sistema para salões com múltiplos profissionais e caixa.</p>
-                    <div class="tags-container">
-                        <span class="tag-btn">Vue.js</span>
-                        <span class="tag-btn">Laravel</span>
-                    </div>
                 </div>
             </div>
 
@@ -615,10 +598,6 @@
                 <div class="project-info">
                     <h4>Painel Financeiro</h4>
                     <p>Dashboard para controle de gastos com gráficos.</p>
-                    <div class="tags-container">
-                        <span class="tag-btn">React</span>
-                        <span class="tag-btn">Firebase</span>
-                    </div>
                 </div>
             </div>
 
@@ -629,10 +608,6 @@
                 <div class="project-info">
                     <h4>Auditoria e Hardening</h4>
                     <p>Análise de vulnerabilidades e proteção de servidores.</p>
-                    <div class="tags-container">
-                        <span class="tag-btn">Linux</span>
-                        <span class="tag-btn">OWASP</span>
-                    </div>
                 </div>
             </div>
 
@@ -643,10 +618,6 @@
                 <div class="project-info">
                     <h4>Bot de Automação (RPA)</h4>
                     <p>Robô para automatizar extração de dados e preenchimento.</p>
-                    <div class="tags-container">
-                        <span class="tag-btn">Python</span>
-                        <span class="tag-btn">Selenium</span>
-                    </div>
                 </div>
             </div>
         </div>
