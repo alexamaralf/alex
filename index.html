@@ -363,7 +363,54 @@
         .form-control:focus { outline: none; border-color: var(--accent); background: #fff; }
         textarea.form-control { resize: vertical; min-height: 120px; }
 
+        /* Estilo para a mensagem de Status do Formulário */
+        #form-status {
+            margin-top: 15px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            text-align: center;
+            border-radius: 5px;
+            padding: 10px;
+            display: none; /* Oculto por padrão */
+        }
+        .status-success { background-color: #dcfce7; color: #166534; border: 1px solid #bbf7d0; }
+        .status-error { background-color: #fee2e2; color: #991b1b; border: 1px solid #fecaca; }
+
         footer { background: #0f172a; padding: 2rem 10%; text-align: center; color: #94a3b8; font-size: 0.9rem; }
+
+        /* --- BOTÃO FLUTUANTE WHATSAPP --- */
+        .whatsapp-float {
+            position: fixed;
+            width: 60px;
+            height: 60px;
+            bottom: 30px;
+            right: 30px;
+            background-color: #25d366;
+            color: #FFF;
+            border-radius: 50px;
+            text-align: center;
+            font-size: 30px;
+            box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            animation: pulse-green 2s infinite;
+        }
+
+        .whatsapp-float:hover {
+            background-color: #128c7e;
+            transform: scale(1.1);
+            color: #fff;
+        }
+
+        @keyframes pulse-green {
+            0% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.7); }
+            70% { box-shadow: 0 0 0 15px rgba(37, 211, 102, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0); }
+        }
 
         /* --- MEDIA QUERIES (RESPONSIVO) --- */
         @media (max-width: 768px) {
@@ -402,6 +449,15 @@
             section { padding: 4rem 5%; }
             .portfolio-grid { grid-template-columns: 1fr; }
             .contact-container { grid-template-columns: 1fr; gap: 3rem; }
+            
+            /* Ajuste do botão whatsapp no mobile para não cobrir conteúdo */
+            .whatsapp-float {
+                bottom: 20px;
+                right: 20px;
+                width: 50px;
+                height: 50px;
+                font-size: 25px;
+            }
         }
     </style>
 </head>
@@ -662,14 +718,31 @@
                 </div>
             </div>
 
-            <form class="contact-form">
-                <div class="form-group"><input type="text" class="form-control" placeholder="Seu Nome" required></div>
-                <div class="form-group"><input type="email" class="form-control" placeholder="Seu Email" required></div>
-                <div class="form-group"><input type="text" class="form-control" placeholder="Assunto" required></div>
-                <div class="form-group"><textarea class="form-control" placeholder="Sua Mensagem" required></textarea></div>
+            <form id="contactForm" class="contact-form" action="https://formspree.io/f/mwpgqpgw" method="POST">
+                <div class="form-group">
+                    <input type="text" name="name" class="form-control" placeholder="Seu Nome" required>
+                </div>
+                
+                <div class="form-group">
+                    <input type="email" name="_replyto" class="form-control" placeholder="Seu Email" required>
+                </div>
+
+                <div class="form-group">
+                    <input type="tel" id="phone" name="phone" class="form-control" placeholder="Seu Telefone (xx) xxxxx-xxxx" required>
+                </div>
+
+                <div class="form-group">
+                    <input type="text" name="_subject" class="form-control" placeholder="Assunto" required>
+                </div>
+                
+                <div class="form-group">
+                    <textarea name="message" class="form-control" placeholder="Sua Mensagem" required></textarea>
+                </div>
                 <button type="submit" class="btn btn-primary" style="width: 100%;">
                     <i class="fas fa-paper-plane"></i> Enviar Mensagem
                 </button>
+                
+                <div id="form-status"></div>
             </form>
         </div>
     </section>
@@ -677,6 +750,10 @@
     <footer>
         <p>&copy; 2025 Alex Amaral. Todos os direitos reservados.</p>
     </footer>
+
+    <a href="https://wa.me/5511997083479" class="whatsapp-float" target="_blank">
+        <i class="fab fa-whatsapp"></i>
+    </a>
 
     <script>
         // Menu Mobile
@@ -712,6 +789,29 @@
             });
         });
 
+        // --- MÁSCARA DE TELEFONE (FORMATO BRASILEIRO) ---
+        const phoneInput = document.getElementById('phone');
+        
+        phoneInput.addEventListener('input', function (e) {
+            let value = e.target.value.replace(/\D/g, ''); // Remove tudo o que não é dígito
+            
+            // Adiciona a máscara
+            if (value.length > 10) {
+                // Formato Celular (11) 99999-9999
+                value = value.replace(/^(\d{2})(\d{5})(\d{4}).*/, '($1) $2-$3');
+            } else if (value.length > 5) {
+                // Formato Fixo/Incompleto (11) 9999-9999
+                value = value.replace(/^(\d{2})(\d{4})(\d{0,4}).*/, '($1) $2-$3');
+            } else if (value.length > 2) {
+                // Formato Parcial (11) 99...
+                value = value.replace(/^(\d{2})(\d{0,5}).*/, '($1) $2');
+            } else {
+                value = value.replace(/^(\d*)/, '($1');
+            }
+            
+            e.target.value = value;
+        });
+
         // --- SCRIPT DE DIGITAÇÃO (Typewriter) ---
         const textElement = document.getElementById('typing-text');
         const texts = ['Cyber Segurança', 'Automação (RPA)', 'Desenvolvimento Web'];
@@ -730,9 +830,7 @@
             textElement.textContent = letter;
             
             if (letter.length === currentText.length) {
-                // Pausa quando termina de digitar a palavra completa
                 setTimeout(() => {
-                    // Função para apagar
                     let deleteInterval = setInterval(() => {
                         letter = currentText.slice(0, --index);
                         textElement.textContent = letter;
@@ -741,12 +839,52 @@
                             count++;
                             type();
                         }
-                    }, 50); // Velocidade de apagar
-                }, 2000); // Tempo de espera antes de apagar
+                    }, 50);
+                }, 2000);
             } else {
-                setTimeout(type, 100); // Velocidade de digitar
+                setTimeout(type, 100);
             }
         })();
+
+        // --- SCRIPT DE ENVIO DO FORMULÁRIO (AJAX) ---
+        var form = document.getElementById("contactForm");
+        
+        async function handleSubmit(event) {
+            event.preventDefault();
+            var status = document.getElementById("form-status");
+            var data = new FormData(event.target);
+
+            status.style.display = 'block';
+            status.innerHTML = "Enviando...";
+            status.className = "";
+
+            fetch(event.target.action, {
+                method: form.method,
+                body: data,
+                headers: {
+                    'Accept': 'application/json'
+                }
+            }).then(response => {
+                if (response.ok) {
+                    status.innerHTML = "Obrigado! Sua mensagem foi enviada com sucesso.";
+                    status.classList.add("status-success");
+                    form.reset();
+                } else {
+                    response.json().then(data => {
+                        if (Object.hasOwn(data, 'errors')) {
+                            status.innerHTML = data["errors"].map(error => error["message"]).join(", ");
+                        } else {
+                            status.innerHTML = "Ops! Ocorreu um erro ao enviar.";
+                        }
+                        status.classList.add("status-error");
+                    })
+                }
+            }).catch(error => {
+                status.innerHTML = "Ops! Ocorreu um problema na conexão.";
+                status.classList.add("status-error");
+            });
+        }
+        form.addEventListener("submit", handleSubmit);
     </script>
 </body>
 </html>
